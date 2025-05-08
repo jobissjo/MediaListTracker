@@ -1,0 +1,113 @@
+<div class="category-form-container">
+  <div class="form-header">
+    <h1>{{ isEdit ? 'Edit' : 'Create New' }} Category</h1>
+    <div class="form-actions header-actions">
+      <button mat-stroked-button (click)="onCancel()">
+        <mat-icon>arrow_back</mat-icon>
+        Back to Categories
+      </button>
+    </div>
+  </div>
+  
+  <mat-card class="form-card">
+    <mat-card-content>
+      <div *ngIf="isLoading" class="loading-container">
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        <p>Loading category...</p>
+      </div>
+      
+      <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" placeholder="Enter category name">
+            <mat-error *ngIf="categoryForm.get('name')?.hasError('required')">
+              Name is required
+            </mat-error>
+            <mat-error *ngIf="categoryForm.get('name')?.hasError('minlength')">
+              Name must be at least 3 characters
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" rows="3" placeholder="Enter category description"></textarea>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-subheader">Category Type</div>
+          <mat-radio-group formControlName="type" class="radio-group">
+            <mat-radio-button [value]="MediaType.MOVIE">Movie</mat-radio-button>
+            <mat-radio-button [value]="MediaType.TV_SHOW">TV Show</mat-radio-button>
+            <mat-radio-button [value]="MediaType.BOOK">Book</mat-radio-button>
+            <mat-radio-button [value]="MediaType.COURSE">Course</mat-radio-button>
+            <mat-radio-button [value]="MediaType.CUSTOM">Custom</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-subheader">Duration Type</div>
+          <mat-radio-group formControlName="durationType" class="radio-group">
+            <mat-radio-button [value]="ItemDurationType.ONE_TIME">One-time (complete at once)</mat-radio-button>
+            <mat-radio-button [value]="ItemDurationType.DURABLE">Durable (track progress over time)</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-subheader">Category Color</div>
+          <div class="color-options">
+            <div 
+              *ngFor="let colorOption of colorOptions" 
+              class="color-option" 
+              [style.background-color]="colorOption.value"
+              [class.selected]="categoryForm.get('color')?.value === colorOption.value"
+              (click)="categoryForm.get('color')?.setValue(colorOption.value)">
+              <mat-icon *ngIf="categoryForm.get('color')?.value === colorOption.value">check</mat-icon>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-subheader">Category Icon</div>
+          <div class="icon-options">
+            <div 
+              *ngFor="let iconOption of iconOptions" 
+              class="icon-option" 
+              [class.selected]="categoryForm.get('icon')?.value === iconOption.value"
+              (click)="categoryForm.get('icon')?.setValue(iconOption.value)">
+              <mat-icon>{{ iconOption.value }}</mat-icon>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-row preview-section">
+          <div class="form-subheader">Preview</div>
+          <div class="category-preview">
+            <div class="preview-icon" [style.background-color]="categoryForm.get('color')?.value">
+              <mat-icon>{{ categoryForm.get('icon')?.value }}</mat-icon>
+            </div>
+            <div class="preview-info">
+              <div class="preview-name">{{ categoryForm.get('name')?.value || 'Category Name' }}</div>
+              <div class="preview-description">{{ categoryForm.get('description')?.value || 'Category Description' }}</div>
+            </div>
+          </div>
+        </div>
+        
+        <mat-divider></mat-divider>
+        
+        <div class="form-actions">
+          <button mat-stroked-button type="button" (click)="onCancel()">
+            Cancel
+          </button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="categoryForm.invalid || isSubmitting">
+            <mat-icon>{{ isEdit ? 'save' : 'add' }}</mat-icon>
+            {{ isEdit ? 'Update' : 'Create' }} Category
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

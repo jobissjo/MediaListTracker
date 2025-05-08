@@ -1,0 +1,115 @@
+<div class="category-list-container">
+  <div class="category-list-header">
+    <h1>Media Categories</h1>
+    <button mat-raised-button color="primary" (click)="navigateToAddCategory()">
+      <mat-icon>add</mat-icon>
+      Add Custom Category
+    </button>
+  </div>
+  
+  <div class="default-categories">
+    <h2 class="section-title">Default Categories</h2>
+    <div class="categories-grid">
+      <mat-card class="category-card" *ngFor="let item of (defaultCategories$ | async)">
+        <mat-card-header>
+          <div mat-card-avatar class="category-icon" [style.background-color]="item.category.color">
+            <mat-icon>{{ item.category.icon }}</mat-icon>
+          </div>
+          <mat-card-title>{{ item.category.name }}</mat-card-title>
+          <mat-card-subtitle>{{ item.itemCount }} items</mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <p class="description" *ngIf="item.category.description">{{ item.category.description }}</p>
+          
+          <div class="category-metadata">
+            <div class="metadata-item">
+              <span class="label">Type:</span>
+              <span class="value">{{ getMediaTypeLabel(item.category.type) }}</span>
+            </div>
+            
+            <div class="metadata-item">
+              <span class="label">Duration:</span>
+              <span class="value">{{ getDurationTypeLabel(item.category.durationType) }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+        
+        <mat-card-actions>
+          <button mat-button color="primary" (click)="viewCategoryItems(item.category.id)">
+            <mat-icon>view_list</mat-icon>
+            View Items
+          </button>
+          
+          <button mat-button [disabled]="true" matTooltip="Default categories cannot be edited">
+            <mat-icon>edit</mat-icon>
+            Edit
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+  
+  <div class="custom-categories">
+    <h2 class="section-title">Custom Categories</h2>
+    
+    <ng-container *ngIf="(customCategories$ | async) as customCategories">
+      <div class="categories-grid" *ngIf="customCategories.length > 0; else noCustomCategories">
+        <mat-card class="category-card" *ngFor="let item of customCategories">
+          <mat-card-header>
+            <div mat-card-avatar class="category-icon" [style.background-color]="item.category.color">
+              <mat-icon>{{ item.category.icon || 'category' }}</mat-icon>
+            </div>
+            <mat-card-title>{{ item.category.name }}</mat-card-title>
+            <mat-card-subtitle>{{ item.itemCount }} items</mat-card-subtitle>
+          </mat-card-header>
+          
+          <mat-card-content>
+            <p class="description" *ngIf="item.category.description">{{ item.category.description }}</p>
+            
+            <div class="category-metadata">
+              <div class="metadata-item">
+                <span class="label">Type:</span>
+                <span class="value">{{ getMediaTypeLabel(item.category.type) }}</span>
+              </div>
+              
+              <div class="metadata-item">
+                <span class="label">Duration:</span>
+                <span class="value">{{ getDurationTypeLabel(item.category.durationType) }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+          
+          <mat-card-actions>
+            <button mat-button color="primary" (click)="viewCategoryItems(item.category.id)">
+              <mat-icon>view_list</mat-icon>
+              View Items
+            </button>
+            
+            <button mat-button color="accent" (click)="editCategory(item.category.id)">
+              <mat-icon>edit</mat-icon>
+              Edit
+            </button>
+            
+            <button mat-button color="warn" (click)="deleteCategory(item.category)">
+              <mat-icon>delete</mat-icon>
+              Delete
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+      
+      <ng-template #noCustomCategories>
+        <div class="empty-state">
+          <mat-icon>category</mat-icon>
+          <h3>No Custom Categories</h3>
+          <p>Create custom categories to organize your media in a personalized way.</p>
+          <button mat-raised-button color="primary" (click)="navigateToAddCategory()">
+            <mat-icon>add</mat-icon>
+            Create First Category
+          </button>
+        </div>
+      </ng-template>
+    </ng-container>
+  </div>
+</div>

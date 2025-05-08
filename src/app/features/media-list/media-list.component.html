@@ -1,0 +1,118 @@
+<div class="media-list-container">
+  <div class="media-list-header">
+    <h1>My Media List</h1>
+    <button mat-raised-button color="primary" (click)="addNewMedia()">
+      <mat-icon>add</mat-icon>
+      Add New Media
+    </button>
+  </div>
+  
+  <div class="filters-section">
+    <div class="search-filter">
+      <mat-form-field appearance="outline">
+        <mat-label>Search</mat-label>
+        <input matInput [formControl]="searchControl" placeholder="Search by title or description">
+        <mat-icon matPrefix>search</mat-icon>
+        <button *ngIf="searchControl.value" matSuffix mat-icon-button aria-label="Clear" (click)="searchControl.setValue('')">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+    
+    <div class="additional-filters">
+      <mat-form-field appearance="outline">
+        <mat-label>Category</mat-label>
+        <mat-select [formControl]="categoryFilter">
+          <mat-option value="all">All Categories</mat-option>
+          <mat-option *ngFor="let category of categories$ | async" [value]="category.id">
+            {{ category.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select [formControl]="statusFilter">
+          <mat-option value="all">All Statuses</mat-option>
+          <mat-option [value]="CompletionStatus.COMPLETED">Completed</mat-option>
+          <mat-option [value]="CompletionStatus.IN_PROGRESS">In Progress</mat-option>
+          <mat-option [value]="CompletionStatus.WATCHLIST">Watchlist</mat-option>
+          <mat-option [value]="CompletionStatus.NOT_STARTED">Not Started</mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <button mat-stroked-button color="warn" (click)="clearFilters()" [disabled]="!searchControl.value && categoryFilter.value === 'all' && statusFilter.value === 'all'">
+        Clear Filters
+      </button>
+    </div>
+  </div>
+  
+  <div class="quick-filters">
+    <div class="filter-chips">
+      <mat-chip-listbox aria-label="Status selection">
+        <mat-chip-option 
+          (click)="filterByStatus(CompletionStatus.IN_PROGRESS)" 
+          [selected]="statusFilter.value === CompletionStatus.IN_PROGRESS"
+          color="primary">
+          <mat-icon>play_circle_outline</mat-icon>
+          In Progress
+        </mat-chip-option>
+        
+        <mat-chip-option 
+          (click)="filterByStatus(CompletionStatus.COMPLETED)" 
+          [selected]="statusFilter.value === CompletionStatus.COMPLETED"
+          color="accent">
+          <mat-icon>check_circle</mat-icon>
+          Completed
+        </mat-chip-option>
+        
+        <mat-chip-option 
+          (click)="filterByStatus(CompletionStatus.WATCHLIST)" 
+          [selected]="statusFilter.value === CompletionStatus.WATCHLIST"
+          color="warn">
+          <mat-icon>bookmark</mat-icon>
+          Watchlist
+        </mat-chip-option>
+      </mat-chip-listbox>
+    </div>
+  </div>
+  
+  <div class="media-list-content">
+    <ng-container *ngIf="(filteredItems$ | async) as filteredItems">
+      <div *ngIf="filteredItems.length > 0; else noItems" class="media-grid">
+        <div class="media-grid-item" *ngFor="let item of filteredItems">
+          <app-media-card 
+            [mediaItem]="item"
+            [category]="getCategory(item.categoryId)"
+            (edit)="editMediaItem($event)"
+            (delete)="deleteMediaItem($event)"
+            (statusChange)="updateStatus($event)"
+            (progressUpdate)="updateProgress($event)">
+          </app-media-card>
+        </div>
+      </div>
+      
+      <ng-template #noItems>
+        <div class="empty-state">
+          <mat-icon>search_off</mat-icon>
+          <h3>No items found</h3>
+          <p *ngIf="searchControl.value || categoryFilter.value !== 'all' || statusFilter.value !== 'all'">
+            No items match the current filters. Try changing or clearing your filters.
+          </p>
+          <p *ngIf="!searchControl.value && categoryFilter.value === 'all' && statusFilter.value === 'all'">
+            You haven't added any media items yet. Start by adding your first one!
+          </p>
+          <div class="empty-actions">
+            <button mat-stroked-button color="primary" (click)="clearFilters()" *ngIf="searchControl.value || categoryFilter.value !== 'all' || statusFilter.value !== 'all'">
+              Clear Filters
+            </button>
+            <button mat-raised-button color="primary" (click)="addNewMedia()">
+              <mat-icon>add</mat-icon>
+              Add New Media
+            </button>
+          </div>
+        </div>
+      </ng-template>
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,117 @@
+<mat-card class="media-card">
+  <div class="card-thumbnail" [style.background-image]="'url(' + mediaItem.thumbnailUrl + ')'">
+    <div class="status-badge" [style.background-color]="statusColor">{{ statusText }}</div>
+  </div>
+  
+  <mat-card-content>
+    <div class="card-header">
+      <h2 class="title">{{ mediaItem.title }}</h2>
+      
+      <div *ngIf="showActions" class="card-actions">
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Media options">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="onEdit()">
+            <mat-icon>edit</mat-icon>
+            <span>Edit</span>
+          </button>
+          
+          <button mat-menu-item (click)="onDelete()">
+            <mat-icon>delete</mat-icon>
+            <span>Delete</span>
+          </button>
+          
+          <mat-divider></mat-divider>
+          
+          <!-- Status change options -->
+          <button mat-menu-item (click)="onStatusChange(CompletionStatus.NOT_STARTED)" 
+                  [disabled]="mediaItem.status === CompletionStatus.NOT_STARTED">
+            <mat-icon>fiber_new</mat-icon>
+            <span>Mark as Not Started</span>
+          </button>
+          
+          <button mat-menu-item (click)="onStatusChange(CompletionStatus.IN_PROGRESS)" 
+                  [disabled]="mediaItem.status === CompletionStatus.IN_PROGRESS">
+            <mat-icon>play_circle_outline</mat-icon>
+            <span>Mark as In Progress</span>
+          </button>
+          
+          <button mat-menu-item (click)="onStatusChange(CompletionStatus.COMPLETED)" 
+                  [disabled]="mediaItem.status === CompletionStatus.COMPLETED">
+            <mat-icon>check_circle</mat-icon>
+            <span>Mark as Completed</span>
+          </button>
+          
+          <button mat-menu-item (click)="onStatusChange(CompletionStatus.WATCHLIST)" 
+                  [disabled]="mediaItem.status === CompletionStatus.WATCHLIST">
+            <mat-icon>bookmark</mat-icon>
+            <span>Add to Watchlist</span>
+          </button>
+          
+          <!-- For durable items, show progress adjustment option -->
+          <button mat-menu-item (click)="startAdjustingProgress()" 
+                  *ngIf="mediaItem.durationType === ItemDurationType.DURABLE">
+            <mat-icon>edit_attributes</mat-icon>
+            <span>Adjust Progress</span>
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+    
+    <div class="category-chip" *ngIf="category" [style.background-color]="category.color + '33'">
+      <mat-icon *ngIf="category.icon">{{ category.icon }}</mat-icon>
+      <span>{{ category.name }}</span>
+    </div>
+    
+    <p class="description" *ngIf="mediaItem.description">{{ mediaItem.description }}</p>
+    
+    <div class="progress-section">
+      <app-progress-indicator 
+        [value]="mediaItem.progress || 0" 
+        [color]="statusColor">
+      </app-progress-indicator>
+      
+      <div class="progress-info" *ngIf="mediaItem.durationType === ItemDurationType.DURABLE">
+        <span>{{ mediaItem.completedUnits || 0 }} / {{ mediaItem.totalDuration || 0 }}</span>
+      </div>
+    </div>
+    
+    <!-- Progress adjustment dialog -->
+    <div class="progress-adjustment" *ngIf="isAdjustingProgress && mediaItem.durationType === ItemDurationType.DURABLE">
+      <h3>Adjust Progress</h3>
+      
+      <div class="adjustment-controls">
+        <span>{{ tempProgress }} / {{ mediaItem.totalDuration }}</span>
+        
+        <div class="adjustment-buttons">
+          <button mat-icon-button (click)="updateTemporaryProgress(tempProgress - 1)" [disabled]="tempProgress <= 0">
+            <mat-icon>remove</mat-icon>
+          </button>
+          
+          <button mat-icon-button (click)="updateTemporaryProgress(tempProgress + 1)" [disabled]="tempProgress >= (mediaItem.totalDuration || 0)">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </div>
+      
+      <div class="adjustment-actions">
+        <button mat-stroked-button color="warn" (click)="cancelProgressAdjustment()">Cancel</button>
+        <button mat-raised-button color="primary" (click)="commitProgress()">Save</button>
+      </div>
+    </div>
+    
+    <div class="card-footer">
+      <div class="added-date">
+        <mat-icon>event</mat-icon>
+        <span>Added: {{ mediaItem.addedDate | date }}</span>
+      </div>
+      
+      <div class="completion-date" *ngIf="mediaItem.completedDate">
+        <mat-icon>event_available</mat-icon>
+        <span>Completed: {{ formatCompletionDate(mediaItem.completedDate) }}</span>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

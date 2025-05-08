@@ -1,0 +1,175 @@
+.media-card {
+  width: 100%;
+  margin-bottom: 20px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  break-inside: avoid;
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.card-thumbnail {
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 10px;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(0deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 50%);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+  }
+}
+
+.status-badge {
+  position: relative;
+  z-index: 1;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  flex: 1;
+}
+
+.card-actions {
+  margin-left: 10px;
+}
+
+.category-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 16px;
+  font-size: 12px;
+  margin-bottom: 10px;
+  
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+  }
+}
+
+.description {
+  margin: 10px 0;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.progress-section {
+  margin: 15px 0;
+  
+  .progress-info {
+    display: flex;
+    justify-content: flex-end;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.6);
+    margin-top: 4px;
+  }
+}
+
+.card-footer {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.6);
+  margin-top: 10px;
+  
+  .added-date, .completion-date {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+    
+    mat-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+      margin-right: 4px;
+    }
+  }
+}
+
+.progress-adjustment {
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  padding: 12px;
+  margin: 10px 0;
+  
+  h3 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  
+  .adjustment-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    
+    span {
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
+  
+  .adjustment-buttons {
+    display: flex;
+    align-items: center;
+  }
+  
+  .adjustment-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .card-thumbnail {
+    height: 150px;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+  
+  .description {
+    font-size: 13px;
+  }
+}
